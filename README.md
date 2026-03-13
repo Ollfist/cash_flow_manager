@@ -1,2 +1,2 @@
-# cash_flow_manager
+# Сash flow manager
 Simple web app for cash flow management
