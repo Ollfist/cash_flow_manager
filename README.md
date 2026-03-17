@@ -1,7 +1,7 @@
 # English
 # Web-app "Сash flow manager"
 Simple web app for cash flow management
-A cash flow accounting application with support for logical dependencies between entities (Type → Category → Subcategory).
+A cash flow accounting application with support for logical dependencies between entities.
 
 ## Technology
 - Python 3.x
@@ -48,7 +48,7 @@ Open the browser at: http://127.0.0.1:8000/
 # Русский
 # Веб-приложение "Учет ДДС"
 Простое веб-приложение для управления денежными потоками
-Приложение для учета движения денежных средств с поддержкой логических зависимостей между сущностями (Тип → Категория → Подкатегория).
+Приложение для учета движения денежных средств с поддержкой логических зависимостей между сущностями.
 
 ## Технологии
 - Python 3.x
