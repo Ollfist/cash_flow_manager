@@ -1,0 +1,86 @@
+{% extends 'transactions/layout.html' %}
+{% load django_bootstrap5 %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">{{ title }}</h4>
+            </div>
+            <div class="card-body">
+                <form method="post" id="transactionForm">
+                    {% csrf_token %}
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">{% bootstrap_field form.date %}</div>
+                        <div class="col-md-6">{% bootstrap_field form.status %}</div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">{% bootstrap_field form.type %}</div>
+                        <div class="col-md-6">{% bootstrap_field form.amount %}</div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            {% bootstrap_field form.category %}
+                        </div>
+                        <div class="col-md-6">
+                            {% bootstrap_field form.subcategory %}
+                        </div>
+                    </div>
+
+                    {% bootstrap_field form.comment %}
+
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                        <a href="{% url 'index' %}" class="btn btn-secondary me-md-2">Отмена</a>
+                        <button type="submit" class="btn btn-success">Сохранить</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const categorySelect = document.getElementById('id_category');
+        const subcategorySelect = document.getElementById('id_subcategory');
+
+        function loadSubcategories() {
+            const catId = categorySelect.value;
+            subcategorySelect.innerHTML = '<option value="">Загрузка...</option>';
+            
+            if (!catId) {
+                subcategorySelect.innerHTML = '<option value="">Сначала выберите категорию</option>';
+                return;
+            }
+
+            fetch(`/ajax/load-subcategories/?category_id=${catId}`)
+                .then(response => response.json())
+                .then(data => {
+                    subcategorySelect.innerHTML = '<option value="">Выберите подкатегорию</option>';
+                    data.forEach(item => {
+                        const option = document.createElement('option');
+                        option.value = item.id;
+                        option.textContent = item.name;
+                        {% if form.instance.subcategory %}
+                        if (item.id == {{ form.instance.subcategory.id }}) option.selected = true;
+                        {% endif %}
+                        subcategorySelect.appendChild(option);
+                    });
+                });
+        }
+
+        categorySelect.addEventListener('change', loadSubcategories);
+        
+        // При загрузке страницы, если категория уже выбрана (режим редактирования), грузим подкатегории
+        if (categorySelect.value) loadSubcategories();
+    });
+</script>
+{% endblock %}

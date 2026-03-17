@@ -1,0 +1,43 @@
+{% extends 'transactions/layout.html' %}
+{% load django_bootstrap5 %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+<h3>{{ title }}</h3>
+<div class="row">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">Добавить новый</div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    {% bootstrap_form form %}
+                    <button type="submit" class="btn btn-primary w-100 mt-2">Добавить</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-8">
+        <table class="table table-striped">
+            <thead><tr><th>Название</th><th>Зависимость</th><th>Действия</th></tr></thead>
+            <tbody>
+                {% for item in items %}
+                <tr>
+                    <td>{{ item.name }}</td>
+                    <td>
+                        {% if item.transaction_type %}Тип: {{ item.transaction_type }}{% endif %}
+                        {% if item.category %}Категория: {{ item.category }}{% endif %}
+                    </td>
+                    <td>
+                        <a href="{% url 'manage_dictionary_edit' model_name item.pk %}" class="btn btn-sm btn-outline-primary">Изменить</a>
+                        <form method="post" style="display:inline;" onsubmit="return confirm('Удалить?');">
+                            {% csrf_token %}
+                            <button type="submit" name="delete" class="btn btn-sm btn-outline-danger">Удалить</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
